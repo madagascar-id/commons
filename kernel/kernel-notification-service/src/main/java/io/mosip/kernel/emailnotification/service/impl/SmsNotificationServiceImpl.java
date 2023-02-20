@@ -1,5 +1,8 @@
 package io.mosip.kernel.emailnotification.service.impl;
 
+import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -19,6 +22,8 @@ import io.mosip.kernel.emailnotification.service.SmsNotification;
 @RefreshScope
 @Service
 public class SmsNotificationServiceImpl implements SmsNotification {
+
+	Logger LOGGER = LoggerFactory.getLogger(EmailNotificationServiceImpl.class);
 
 	@Value("${spring.profiles.active}")
 	String activeProfile;
@@ -46,6 +51,8 @@ public class SmsNotificationServiceImpl implements SmsNotification {
 			smsResponseDTO.setStatus("success");
 			return smsResponseDTO;
 		}
-		return smsServiceProvider.sendSms(contactNumber, contentMessage);
+		SMSResponseDto smsResponseDto = smsServiceProvider.sendSms(contactNumber, contentMessage);
+		LOGGER.info((new Gson()).toJson(smsResponseDto));
+		return smsResponseDto;
 	}
 }
